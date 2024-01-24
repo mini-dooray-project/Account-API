@@ -1,0 +1,38 @@
+POST http://localhost:8060/accounts
+Content-Type: application/json
+
+{
+  "id": "user1",
+  "password": "1234",
+  "name": "유저1",
+  "email": "user1@gmail.com",
+  "latestLoginDate": "2024-01-25",
+  "createdDate": "2024-01-25",
+  "accountState": "회원"
+}
+
+###
+POST http://localhost:8060/accounts
+Content-Type: application/json
+
+{
+"id": "user2",
+"password": "1234",
+"name": "유저2",
+"email": "user2@gmail.com",
+"latestLoginDate": "2024-01-25",
+"createdDate": "2024-01-25",
+"accountState": "회원"
+}
+
+###
+GET http://localhost:8060/accounts
+
+###
+GET http://localhost:8060/accounts/user1
+
+###
+DELETE http://localhost:8060/accounts/user1
+
+###
+DELETE http://localhost:8060/accounts/user2
