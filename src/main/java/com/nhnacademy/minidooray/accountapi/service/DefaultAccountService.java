@@ -1,6 +1,7 @@
 package com.nhnacademy.minidooray.accountapi.service;
 
 import com.nhnacademy.minidooray.accountapi.entity.Account;
+import com.nhnacademy.minidooray.accountapi.exception.AccountNotFoundException;
 import com.nhnacademy.minidooray.accountapi.repository.AccountRepository;
 import java.util.List;
 import org.springframework.stereotype.Service;
@@ -18,14 +19,18 @@ public class DefaultAccountService implements AccountService{
     @Override
     @Transactional(readOnly = true)
     public List<Account> getAccounts(){
-        return accountRepository.findAll();
+        List<Account> accounts = accountRepository.findAll();
+        if(accounts.isEmpty()){
+            throw new AccountNotFoundException("accounts not found");
+        }
+        return accounts;
     }
 
     @Override
     @Transactional(readOnly = true)
     public Account getAccount(String id){
         return accountRepository.findById(id)
-                .orElseThrow();
+                .orElseThrow(() -> new AccountNotFoundException("account not found"));
     }
 
     @Override
@@ -41,6 +46,10 @@ public class DefaultAccountService implements AccountService{
     @Override
     @Transactional
     public void deleteAccount(String id) {
+        boolean present = accountRepository.findById(id).isPresent();
+        if(present){
+            throw new IllegalStateException("already exist " + id);
+        }
         accountRepository.deleteById(id);
     }
 }
