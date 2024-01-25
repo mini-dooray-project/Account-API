@@ -19,6 +19,14 @@ Content-Type: application/json
   "email": "user2@gmail.com"
 }
 
+###
+POST http://localhost:8060/api/accounts/login
+Content-Type: application/json
+
+{
+  "id": "user1",
+  "password": "1234"
+}
 
 ###
 PUT http://localhost:8060/api/accounts
@@ -44,3 +52,4 @@ DELETE http://localhost:8060/api/accounts/user1
 
 ###
 DELETE http://localhost:8060/api/accounts/user2
+

@@ -1,18 +1,21 @@
 package com.nhnacademy.minidooray.accountapi.service;
 
-import com.nhnacademy.minidooray.accountapi.entity.Account;
+import com.nhnacademy.minidooray.accountapi.domain.AccountDto;
+import com.nhnacademy.minidooray.accountapi.model.AccountLoginRequest;
 import com.nhnacademy.minidooray.accountapi.model.AccountModifyRequest;
 import com.nhnacademy.minidooray.accountapi.model.AccountRegisterRequest;
 import java.util.List;
 
 public interface AccountService {
-    List<Account> getAccounts();
+    Boolean match(AccountLoginRequest accountRequest);
 
-    Account getAccount(String id);
+    List<AccountDto> getAccounts();
 
-    Account createAccount(AccountRegisterRequest accountRequest);
+    AccountDto getAccount(String id);
 
-    Account modifyAccount(AccountModifyRequest accountRequest);
+    void createAccount(AccountRegisterRequest accountRequest);
+
+    void modifyAccount(AccountModifyRequest accountRequest);
 
     void deleteAccount(String id);
 }
