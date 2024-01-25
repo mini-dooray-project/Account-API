@@ -40,14 +40,7 @@ public class AccountController {
         if(bindingResult.hasErrors()){
             throw new ValidationFailedException(bindingResult);
         }
-        Account account = new Account(accountRequest.getId()
-                                    , accountRequest.getPassword()
-                                    , accountRequest.getName()
-                                    , accountRequest.getEmail()
-                                    , accountRequest.getLatestLoginDate()
-                                    , accountRequest.getCreatedDate()
-                                    , accountRequest.getAccountState());
-        accountService.createAccount(account);
+        Account account = accountService.createAccount(accountRequest);
         return account;
     }
 

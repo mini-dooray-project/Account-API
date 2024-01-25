@@ -11,8 +11,8 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 import lombok.Setter;
+import org.springframework.lang.Nullable;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -40,11 +40,9 @@ public class Account {
     @Size(max = 30)
     private String email;
 
-    @NonNull
     @Column(name = "latest_login_date")
     private LocalDate latestLoginDate;
 
-    @NonNull
     @Column(name = "created_date")
     private LocalDate createdDate;
 
