@@ -7,7 +7,7 @@ import com.nhnacademy.minidooray.accountapi.model.AccountRegisterRequest;
 import java.util.List;
 
 public interface AccountService {
-    Boolean match(AccountLoginRequest accountRequest);
+    String match(AccountLoginRequest accountRequest);
 
     List<AccountDto> getAccounts();
 

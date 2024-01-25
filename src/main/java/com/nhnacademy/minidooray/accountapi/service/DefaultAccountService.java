@@ -25,12 +25,12 @@ public class DefaultAccountService implements AccountService{
 
     @Override
     @Transactional(readOnly = true)
-    public Boolean match(AccountLoginRequest accountRequest){
-        Optional<String> account = accountRepository.findByLoginId(accountRequest.getId());
+    public String match(AccountLoginRequest accountRequest){
+        Optional<String> account = accountRepository.findByLoginId(accountRequest.getId(),accountRequest.getPassword());
         if(account.isEmpty()){
             throw new AccountNotFoundException("account not found");
         }
-        return account.get().equals(accountRequest.getPassword());
+        return account.get();
     }
 
     @Override

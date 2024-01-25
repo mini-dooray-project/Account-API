@@ -6,5 +6,5 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class MatchResponse {
-    private Boolean result;
+    private String result;
 }
