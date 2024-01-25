@@ -2,10 +2,12 @@ package com.nhnacademy.minidooray.accountapi.service;
 
 import com.nhnacademy.minidooray.accountapi.entity.Account;
 import com.nhnacademy.minidooray.accountapi.exception.AccountNotFoundException;
+import com.nhnacademy.minidooray.accountapi.model.AccountModifyRequest;
 import com.nhnacademy.minidooray.accountapi.model.AccountRegisterRequest;
 import com.nhnacademy.minidooray.accountapi.repository.AccountRepository;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,9 +56,25 @@ public class DefaultAccountService implements AccountService{
 
     @Override
     @Transactional
+    public Account modifyAccount(AccountModifyRequest accountRequest) {
+        Optional<Account> result = accountRepository.findById(accountRequest.getId());
+        if(result.isEmpty()){
+            throw new IllegalStateException("not found " + accountRequest.getId());
+        }
+        Account account = result.get();
+        account.setPassword(accountRequest.getPassword());
+        account.setName(accountRequest.getName());
+        account.setEmail(accountRequest.getEmail());
+        account.setLatestLoginDate(accountRequest.getLatestLoginDate());
+        account.setAccountState(accountRequest.getAccountState());
+        return accountRepository.save(account);
+    }
+
+    @Override
+    @Transactional
     public void deleteAccount(String id) {
         boolean present = accountRepository.findById(id).isPresent();
-        if(present){
+        if(!present){
             throw new IllegalStateException("already exist " + id);
         }
         accountRepository.deleteById(id);

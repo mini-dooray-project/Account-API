@@ -13,10 +13,24 @@ POST http://localhost:8060/api/accounts
 Content-Type: application/json
 
 {
-"id": "user2",
-"password": "1234",
-"name": "유저2",
-"email": "user2@gmail.com"
+  "id": "user2",
+  "password": "1234",
+  "name": "유저2",
+  "email": "user2@gmail.com"
+}
+
+
+###
+PUT http://localhost:8060/api/accounts
+Content-Type: application/json
+
+{
+  "id": "user2",
+  "password": "12345",
+  "name": "유저22",
+  "email": "user22@gmail.com",
+  "latestLoginDate": "2024-01-01",
+  "accountState": "회원"
 }
 
 ###

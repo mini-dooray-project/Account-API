@@ -1,5 +1,6 @@
 package com.nhnacademy.minidooray.accountapi.model;
 
+import java.time.LocalDate;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -7,8 +8,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class AccountRegisterRequest {
-
+public class AccountModifyRequest {
     @NotBlank
     @Size(max = 20)
     private String id;
@@ -24,4 +24,10 @@ public class AccountRegisterRequest {
     @NotBlank
     @Size(max = 30)
     private String email;
+
+    private LocalDate latestLoginDate;
+
+    @NotBlank
+    @Size(max = 10)
+    private String accountState;
 }
