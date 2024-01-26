@@ -37,7 +37,7 @@ public class AccountServiceImpl implements AccountService{
     public List<AccountDto> getAccounts() {
         List<AccountDto> accounts = accountRepository.findAllBy();
         if (accounts.isEmpty()) {
-            throw new AccountNotFoundException("Accounts not found");
+            throw new AccountNotFoundException("accounts not found");
         }
         return accounts;
     }
@@ -46,7 +46,7 @@ public class AccountServiceImpl implements AccountService{
     @Transactional(readOnly = true)
     public AccountDto getAccount(String id) {
         return accountRepository.findAccountById(id)
-                .orElseThrow(() -> new AccountNotFoundException("Account not found"));
+                .orElseThrow(() -> new AccountNotFoundException("account not found"));
     }
 
     @Override
@@ -54,7 +54,7 @@ public class AccountServiceImpl implements AccountService{
     public void createAccount(AccountRegisterRequest accountRequest) {
         boolean present = accountRepository.findById(accountRequest.getId()).isPresent();
         if (present) {
-            throw new IllegalStateException("Account already exists: " + accountRequest.getId());
+            throw new IllegalStateException("account already exists: " + accountRequest.getId());
         }
         Account account = new Account(accountRequest.getId()
                 , accountRequest.getPassword()
@@ -82,7 +82,7 @@ public class AccountServiceImpl implements AccountService{
             account.setAccountState(accountRequest.getAccountState());
             accountRepository.save(account);
         } else {
-            throw new IllegalStateException("Account not found: " + accountRequest.getId());
+            throw new IllegalStateException("account not found: " + accountRequest.getId());
         }
     }
 
@@ -91,7 +91,7 @@ public class AccountServiceImpl implements AccountService{
     public void deleteAccount(String id) {
         boolean present = accountRepository.findById(id).isPresent();
         if (!present) {
-            throw new IllegalStateException("Account not found: " + id);
+            throw new IllegalStateException("account not found: " + id);
         }
         accountRepository.deleteById(id);
     }

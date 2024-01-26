@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalAccountAdvice {
     @ExceptionHandler(AccountNotFoundException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleException(AccountNotFoundException exception) {
         return new ErrorResponse(exception.getMessage());
     }

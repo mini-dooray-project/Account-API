@@ -10,13 +10,9 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.transaction.annotation.Transactional;
 
 @DataJpaTest
-@Transactional
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class AccountRepositoryTest {
 
     @Autowired
@@ -45,7 +41,7 @@ class AccountRepositoryTest {
     void testFindAllBy() {
         List<AccountDto> accounts = accountRepository.findAllBy();
         assertThat(accounts).isNotNull();
-        assertThat(accounts.get(0).getId()).isEqualTo("admin");
+        assertThat(accounts.get(0).getId()).isEqualTo("user");
     }
 
     @Test
