@@ -12,6 +12,7 @@ import com.nhnacademy.minidooray.accountapi.model.AccountRegisterRequest;
 import com.nhnacademy.minidooray.accountapi.repository.AccountRepository;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import javax.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,6 +40,24 @@ class AccountServiceTest {
                 , LocalDate.of(2024,1,26)
                 , "회원");
         accountRepository.save(account);
+    }
+
+    @Test
+    @Transactional
+    void testAccountService() {
+        accountService.createAccount(new AccountRegisterRequest(
+                "user1", "1234", "유저1", "user1@gmail.com"));
+        List<AccountDto> accounts = accountService.getAccounts();
+        assertThat(accounts).isNotEmpty();
+        assertThat(accounts.get(1).getName()).isEqualTo(accountService.getAccount("user1").getName());
+
+        accountService.modifyAccount(new AccountModifyRequest(
+                "user1", "12345", "유저", "user1@gmail.com", LocalDate.of(2024,1,27),"회원"));
+        assertThat(accountService.getAccount("user1").getPassword())
+                .isEqualTo("12345");
+
+        accountService.deleteAccount("user1");
+        assertThat(accountRepository.findAccountById("user1")).isEmpty();
     }
 
     @Test
@@ -139,7 +158,7 @@ class AccountServiceTest {
 
     @Test
     @Transactional
-    void testDeleteAccountException(){
+    void testDeleteAccountException() {
         assertThatExceptionOfType(IllegalStateException.class)
                 .isThrownBy(() -> accountService.deleteAccount("user1"))
                 .withMessage("account not found: user1");
