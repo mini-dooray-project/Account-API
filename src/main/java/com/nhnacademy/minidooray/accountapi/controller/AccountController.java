@@ -1,7 +1,6 @@
 package com.nhnacademy.minidooray.accountapi.controller;
 
 import com.nhnacademy.minidooray.accountapi.domain.AccountDto;
-import com.nhnacademy.minidooray.accountapi.entity.Account;
 import com.nhnacademy.minidooray.accountapi.exception.ValidationFailedException;
 import com.nhnacademy.minidooray.accountapi.model.AccountLoginRequest;
 import com.nhnacademy.minidooray.accountapi.model.AccountModifyRequest;
