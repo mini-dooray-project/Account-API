@@ -8,8 +8,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 public interface AccountRepository extends JpaRepository<Account, String> {
-    @Query("select a.accountState from Account a where a.id = ?1 and a.password = ?2")
-    Optional<String> findByLoginId(String id, String password);
+    @Query("select a from Account a where a.id = ?1 and a.password = ?2")
+    Optional<AccountDto> findByLoginId(String id, String password);
 
     List<AccountDto> findAllBy();
 

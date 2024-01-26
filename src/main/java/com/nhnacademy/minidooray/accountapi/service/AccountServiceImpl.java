@@ -25,11 +25,11 @@ public class AccountServiceImpl implements AccountService{
     @Override
     @Transactional(readOnly = true)
     public String match(AccountLoginRequest accountRequest){
-        Optional<String> account = accountRepository.findByLoginId(accountRequest.getId(),accountRequest.getPassword());
+        Optional<AccountDto> account = accountRepository.findByLoginId(accountRequest.getId(),accountRequest.getPassword());
         if(account.isEmpty()){
             throw new AccountNotFoundException("account not found");
         }
-        return account.get();
+        return account.get().getAccountState();
     }
 
     @Override
