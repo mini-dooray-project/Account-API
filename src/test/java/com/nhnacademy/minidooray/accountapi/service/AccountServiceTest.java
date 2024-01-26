@@ -12,7 +12,6 @@ import com.nhnacademy.minidooray.accountapi.model.AccountRegisterRequest;
 import com.nhnacademy.minidooray.accountapi.repository.AccountRepository;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 import javax.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,6 +20,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
+@Transactional
 @ActiveProfiles("test")
 class AccountServiceTest {
 
@@ -43,7 +43,6 @@ class AccountServiceTest {
     }
 
     @Test
-    @Transactional
     void testAccountService() {
         accountService.createAccount(new AccountRegisterRequest(
                 "user1", "1234", "유저1", "user1@gmail.com"));
@@ -61,7 +60,6 @@ class AccountServiceTest {
     }
 
     @Test
-    @Transactional
     void testMatch() {
         String accountState = accountService.match(new AccountLoginRequest("user", "1234"));
         assertThat(accountState).isNotEmpty();
@@ -69,7 +67,6 @@ class AccountServiceTest {
     }
 
     @Test
-    @Transactional
     void testMatchException() {
         assertThatExceptionOfType(AccountNotFoundException.class)
                 .isThrownBy(() -> accountService.match(new AccountLoginRequest("user", "1111")))
@@ -77,7 +74,6 @@ class AccountServiceTest {
     }
 
     @Test
-    @Transactional
     void testGetAccounts() {
         List<AccountDto> accounts = accountService.getAccounts();
         assertThat(accounts).isNotEmpty();
@@ -85,7 +81,6 @@ class AccountServiceTest {
     }
 
     @Test
-    @Transactional
     void testGetAccountsException() {
         accountRepository.deleteById("user");
         assertThatExceptionOfType(AccountNotFoundException.class)
@@ -94,7 +89,6 @@ class AccountServiceTest {
     }
 
     @Test
-    @Transactional
     void testGetAccount() {
         assertThat(accountService.getAccount("user").getName())
                 .isNotNull()
@@ -102,7 +96,6 @@ class AccountServiceTest {
     }
 
     @Test
-    @Transactional
     void testGetAccountException() {
         assertThatExceptionOfType(AccountNotFoundException.class)
                 .isThrownBy(() -> accountService.getAccount("user2"))
@@ -110,7 +103,6 @@ class AccountServiceTest {
     }
 
     @Test
-    @Transactional
     void testCreateAccount() {
         accountService.createAccount(new AccountRegisterRequest(
                 "user1", "1234", "유저1", "user1@gmail.com"));
@@ -121,7 +113,6 @@ class AccountServiceTest {
     }
 
     @Test
-    @Transactional
     void testCreateAccountException() {
         assertThatExceptionOfType(IllegalStateException.class)
                 .isThrownBy(() -> accountService.createAccount(new AccountRegisterRequest(
@@ -130,7 +121,6 @@ class AccountServiceTest {
     }
 
     @Test
-    @Transactional
     void testModifyAccount() {
         accountService.modifyAccount(new AccountModifyRequest(
                 "user", "12345", "유저", "user@gmail.com", LocalDate.of(2024,1,27),"회원"));
@@ -141,7 +131,6 @@ class AccountServiceTest {
     }
 
     @Test
-    @Transactional
     void testModifyAccountException() {
         assertThatExceptionOfType(IllegalStateException.class)
                 .isThrownBy(() -> accountService.modifyAccount(new AccountModifyRequest(
@@ -150,14 +139,12 @@ class AccountServiceTest {
     }
 
     @Test
-    @Transactional
     void testDeleteAccount() {
         accountService.deleteAccount("user");
         assertThat(accountRepository.findAccountById("user")).isEmpty();
     }
 
     @Test
-    @Transactional
     void testDeleteAccountException() {
         assertThatExceptionOfType(IllegalStateException.class)
                 .isThrownBy(() -> accountService.deleteAccount("user1"))

@@ -8,15 +8,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nhnacademy.minidooray.accountapi.domain.AccountDto;
-import com.nhnacademy.minidooray.accountapi.entity.Account;
 import com.nhnacademy.minidooray.accountapi.model.AccountLoginRequest;
 import com.nhnacademy.minidooray.accountapi.model.AccountModifyRequest;
 import com.nhnacademy.minidooray.accountapi.model.AccountRegisterRequest;
-import com.nhnacademy.minidooray.accountapi.repository.AccountRepository;
+import com.nhnacademy.minidooray.accountapi.service.AccountService;
 import java.time.LocalDate;
 import javax.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -28,6 +27,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
+@Transactional
 class AccountControllerTest {
 
     @Autowired
@@ -37,22 +37,17 @@ class AccountControllerTest {
     private ObjectMapper objectMapper;
 
     @Autowired
-    AccountRepository accountRepository;
+    AccountService accountService;
 
     @BeforeEach
     void setUp(){
-        Account account = new Account("user"
-                , "1234"
-                , "유저"
-                , "user@gmail.com"
-                , null
-                , LocalDate.of(2024,1,26)
-                , "회원");
-        accountRepository.save(account);
+        AccountRegisterRequest accountRequest = new AccountRegisterRequest(
+                "user", "1234", "유저", "user@gmail.com");
+        accountService.createAccount(accountRequest);
     }
 
     @Test
-    @Transactional
+    @Order(1)
     void testMatchResponse() throws Exception {
         AccountLoginRequest accountRequest = new AccountLoginRequest("user", "1234");
         mockMvc.perform(post("/api/accounts/login")
@@ -64,7 +59,7 @@ class AccountControllerTest {
     }
 
     @Test
-    @Transactional
+    @Order(2)
     void testMatchResponseException() throws Exception {
         AccountLoginRequest accountRequest = new AccountLoginRequest(null, "1234567");
         mockMvc.perform(post("/api/accounts/login")
@@ -77,7 +72,7 @@ class AccountControllerTest {
     }
 
     @Test
-    @Transactional
+    @Order(3)
     void testGetAccounts() throws Exception {
         mockMvc.perform(get("/api/accounts"))
                 .andExpect(status().isOk())
@@ -86,9 +81,9 @@ class AccountControllerTest {
     }
 
     @Test
-    @Transactional
+    @Order(4)
     void testGetAccountsException() throws Exception {
-        accountRepository.deleteById("user");
+        accountService.deleteAccount("user");
         mockMvc.perform(get("/api/accounts"))
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -96,7 +91,7 @@ class AccountControllerTest {
     }
 
     @Test
-    @Transactional
+    @Order(5)
     void testGetAccount() throws Exception {
         mockMvc.perform(get("/api/accounts/{id}", "user"))
                 .andExpect(status().isOk())
@@ -105,7 +100,7 @@ class AccountControllerTest {
     }
 
     @Test
-    @Transactional
+    @Order(6)
     void testGetAccountException() throws Exception {
         mockMvc.perform(get("/api/accounts/{id}", "user1"))
                 .andExpect(status().isNotFound())
@@ -115,7 +110,7 @@ class AccountControllerTest {
     }
 
     @Test
-    @Transactional
+    @Order(7)
     void testCreateAccount() throws Exception {
         AccountRegisterRequest accountRequest = new AccountRegisterRequest(
                 "user1", "1234", "유저1", "user1@gmail.com");
@@ -123,14 +118,12 @@ class AccountControllerTest {
                         .content(objectMapper.writeValueAsString(accountRequest))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
-        assertThat(accountRepository.findAccountById("user1"))
-                .isPresent()
-                .map(AccountDto::getName)
-                .hasValue("유저1");
+        assertThat(accountService.getAccount("user1").getName())
+                .isEqualTo("유저1");
     }
 
     @Test
-    @Transactional
+    @Order(8)
     void testCreateAccountException() throws Exception {
         AccountRegisterRequest accountRequest = new AccountRegisterRequest(
                 null, "1234", "유저", "user@gmail.com");
@@ -144,6 +137,7 @@ class AccountControllerTest {
     }
 
     @Test
+    @Order(9)
     void testModifyAccount() throws Exception {
         AccountModifyRequest accountRequest = new AccountModifyRequest(
                 "user", "12345", "유저", "user@gmail.com", LocalDate.of(2024,1,27), "회원");
@@ -151,14 +145,12 @@ class AccountControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(accountRequest)))
                 .andExpect(status().isOk());
-        assertThat(accountRepository.findAccountById("user"))
-                .isPresent()
-                .map(AccountDto::getPassword)
-                .hasValue("12345");
+        assertThat(accountService.getAccount("user").getPassword())
+                .isEqualTo("12345");
     }
 
     @Test
-    @Transactional
+    @Order(10)
     void testModifyAccountException() throws Exception {
         AccountModifyRequest accountRequest = new AccountModifyRequest(
                 null, "12345", "유저", "user@gmail.com", LocalDate.of(2024,1,27), "회원");
@@ -172,6 +164,7 @@ class AccountControllerTest {
     }
 
     @Test
+    @Order(11)
     void testDeleteResponse() throws Exception {
         mockMvc.perform(delete("/api/accounts/{id}", "user")
                         .contentType(MediaType.APPLICATION_JSON)
