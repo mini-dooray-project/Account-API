@@ -1,29 +1,19 @@
 package com.nhnacademy.minidooray.accountapi.domain;
 
-
 import java.time.LocalDate;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-public class AccountDto {
-    private String id;
+public interface AccountDto {
+    String getId();
 
-    private String password;
+    String getPassword();
 
-    private String name;
+    String getName();
 
-    private String email;
+    String getEmail();
 
-    private LocalDate latestLoginDate;
+    LocalDate getLatestLoginDate();
 
-    private LocalDate createdDate;
+    LocalDate getCreatedDate();
 
-    private String accountState;
-
+    String getAccountState();
 }

@@ -27,7 +27,6 @@ public class AccountModifyRequest {
 
     private LocalDate latestLoginDate;
 
-    @NotBlank
     @Size(max = 10)
     private String accountState;
 }

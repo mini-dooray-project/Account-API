@@ -42,7 +42,7 @@ public class AccountController {
     }
 
     @GetMapping("/api/accounts/{id}")
-    public AccountDto getAcount(@PathVariable("id") String id){
+    public AccountDto getAccount(@PathVariable("id") String id){
         return accountService.getAccount(id);
     }
 
@@ -56,7 +56,7 @@ public class AccountController {
     }
 
     @PutMapping("/api/accounts")
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.OK)
     public void modifyAccount(@Valid @RequestBody AccountModifyRequest accountRequest, BindingResult bindingResult){
         if(bindingResult.hasErrors()){
             throw new ValidationFailedException(bindingResult);
