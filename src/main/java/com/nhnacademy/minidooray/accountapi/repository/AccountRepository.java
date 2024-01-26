@@ -11,7 +11,6 @@ public interface AccountRepository extends JpaRepository<Account, String> {
     @Query("select a.accountState from Account a where a.id = ?1 and a.password = ?2")
     Optional<String> findByLoginId(String id, String password);
 
-
     List<AccountDto> findAllBy();
 
     Optional<AccountDto> findAccountById(String id);

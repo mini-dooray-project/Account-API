@@ -20,9 +20,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
+@Transactional
 class AccountControllerTest {
 
     @Autowired
@@ -39,6 +41,23 @@ class AccountControllerTest {
 
     }
 
+//    @Test
+//    void testGetAccounts() throws Exception{
+//
+//        given(accountService.getAccounts()).willReturn(List.of(new Account(
+//                "user",
+//                "12345",
+//                "유저",
+//                "user@gmail.com",
+//                LocalDate.now(),
+//                LocalDate.now(),
+//                "회원") {
+//        }));
+//        mockMvc.perform(get("/api/accounts"))
+//                .andExpect(status().isOk())
+//                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+//                .andExpect(jsonPath("$[0].id", equalTo("user")));
+//    }
 //    @Test
 //    void testGetAccounts() throws Exception {
 //        given(accountRepository.findAll()).willReturn(List.of(
