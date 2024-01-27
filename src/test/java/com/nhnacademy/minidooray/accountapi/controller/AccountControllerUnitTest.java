@@ -1,8 +1,13 @@
 package com.nhnacademy.minidooray.accountapi.controller;
 
 import static org.hamcrest.Matchers.equalTo;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -10,12 +15,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhnacademy.minidooray.accountapi.domain.AccountRequest;
 import com.nhnacademy.minidooray.accountapi.model.AccountLoginRequest;
+import com.nhnacademy.minidooray.accountapi.model.AccountModifyRequest;
 import com.nhnacademy.minidooray.accountapi.model.AccountRegisterRequest;
+import com.nhnacademy.minidooray.accountapi.repository.AccountRepository;
 import com.nhnacademy.minidooray.accountapi.service.AccountService;
 import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -40,6 +49,9 @@ class AccountControllerUnitTest {
 
     @MockBean
     AccountService accountService;
+
+    @MockBean
+    AccountRepository accountRepository;
 
     @BeforeEach
     void setUp(){
@@ -81,6 +93,7 @@ class AccountControllerUnitTest {
     void testGetAccounts() throws Exception {
         given(accountService.getAccounts()).willReturn(List.of(new AccountRequest(
                 "user", "1234", "유저", "user@gmail.com", null, LocalDate.now(), "회원" )));
+
         mockMvc.perform(MockMvcRequestBuilders.get("/api/accounts"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -91,6 +104,7 @@ class AccountControllerUnitTest {
     void testGetAccount() throws Exception {
         given(accountService.getAccount("user")).willReturn(new AccountRequest(
                 "user", "1234", "유저", "user@gmail.com", null, LocalDate.now(), "회원" ));
+
         mockMvc.perform(MockMvcRequestBuilders.get("/api/accounts/{id}", "user"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -99,20 +113,26 @@ class AccountControllerUnitTest {
 
     @Test
     void testCreateAccount() throws Exception {
-//        AccountRegisterRequest accountRequest = new AccountRegisterRequest(
-//                "user1", "1234", "유저1", "user1@gmail.com");
-//        doNothing().when(accountService).createAccount(accountRequest);
-//
-//        mockMvc.perform(post("/api/accounts")
-//                        .content(objectMapper.writeValueAsString(accountRequest))
-//                        .contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isCreated());
-//        assertThat(accountService.getAccount("user1").getName())
-//                .isEqualTo("유저1");
+        AccountRegisterRequest accountRequest = new AccountRegisterRequest(
+                "user1", "1234", "유저1", "user1@gmail.com");
+
+        mockMvc.perform(post("/api/accounts")
+                        .content(objectMapper.writeValueAsString(accountRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated());
+        verify(accountService, times(2)).createAccount(any());
     }
 
     @Test
-    void modifyAccount() {
+    void modifyAccount() throws Exception {
+        AccountModifyRequest accountRequest = new AccountModifyRequest(
+                "user", "12345", "유저", "user@gmail.com", LocalDate.of(2024, 1, 27), "회원");
+
+        mockMvc.perform(put("/api/accounts", "user")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(accountRequest)))
+                .andExpect(status().isOk());
+        verify(accountService, times(1)).modifyAccount(accountRequest);
     }
 
     @Test
